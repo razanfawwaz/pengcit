@@ -1,6 +1,6 @@
 import streamlit as st
 from multipage_streamlit import State
-from content import histogram, faceblur
+from content import histogram, faceblur, edge
 
 # Initialize the state
 state = State(__name__)
@@ -9,6 +9,7 @@ state = State(__name__)
 pages = {
     "Histogram Normalization": histogram.main,
     "Face Blurring": faceblur.main,
+    "Edge Detection": edge.main,
 }
 
 st.sidebar.title("Pengolahan Citra")

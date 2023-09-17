@@ -16,7 +16,9 @@ def main():
     uploaded_image = st.file_uploader(
         "Upload an image", type=["jpg", "png", "jpeg"])
 
-    slider = st.slider("Select a value", 10, 100, 50)
+    blur_type = st.radio("Select blur type", [
+                         "Mean Blur", "Gaussian Blur", "Median Blur"])
+    kernel_size = st.slider("Select kernel size", 1, 99, 10)
 
     if uploaded_image is not None:
         # Read the uploaded image
@@ -47,8 +49,17 @@ def main():
             # Extract the region of interest (ROI) of each face
             face_roi = image[y:y + h, x:x + w]
 
-            # Apply Gaussian blur to the ROI to blur the face
-            blurred_face = cv2.GaussianBlur(face_roi, (99, 99), slider)
+            if kernel_size % 2 == 0:
+                kernel_size += 1
+
+            # Apply the selected blur type with the chosen kernel size
+            if blur_type == "Mean Blur":
+                blurred_face = cv2.blur(face_roi, (kernel_size, kernel_size))
+            elif blur_type == "Gaussian Blur":
+                blurred_face = cv2.GaussianBlur(
+                    face_roi, (kernel_size, kernel_size), 0)
+            elif blur_type == "Median Blur":
+                blurred_face = cv2.medianBlur(face_roi, kernel_size)
 
             # Replace the original face with the blurred face
             image[y:y + h, x:x + w] = blurred_face

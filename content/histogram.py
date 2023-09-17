@@ -10,18 +10,16 @@ state = State(__name__)
 # Define a function to plot the histograms
 
 
-def plot_histograms(original_image, processed_image):
-    original_hist = cv2.calcHist([original_image], [0], None, [256], [0, 256])
-    processed_hist = cv2.calcHist(
-        [processed_image], [0], None, [256], [0, 256])
+def plot_histograms(image):
+    image_hist = cv2.calcHist([image], [0], None, [256], [0, 256])
 
-    fig, ax = plt.subplots(2, 1, figsize=(8, 10))  # Increase the figsize here
-    ax[0].set_title("Original Image Histogram")
-    ax[0].plot(original_hist)
-    ax[1].set_title("Equalized Image Histogram")
-    ax[1].plot(processed_hist)
+    fig, ax = plt.subplots(1, 1, figsize=(8, 5))  # Increase the figsize here
+    ax.set_title("Image Histogram")
+    ax.plot(image_hist)
 
-    st.pyplot(fig)  # Display the histogram in the Streamlit app
+    # Do not display the histogram in the Streamlit app
+    st.pyplot(fig)
+
 
 # Define functions for each page
 
@@ -61,7 +59,14 @@ def main():
             st.image(colored_equalized_image, caption="Processed Image",
                      use_column_width=True, channels="BGR")
 
-        plot_histograms(gray_image, equalized_image)
+        col3, col4 = st.columns(2)
+
+        with col3:
+            st.write("Original Image Histogram")
+            plot_histograms(gray_image)
+        with col4:
+            st.write("Processed Image Histogram")
+            plot_histograms(equalized_image)
 
 
 state.save()
