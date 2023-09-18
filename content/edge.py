@@ -9,7 +9,7 @@ state = State(__name__)
 
 def main():
     # Set the title and description of the Streamlit app
-    st.title("Image Processing App")
+    st.title("Edge Detection App")
     st.write("Upload an image and choose an operation.")
 
     # Upload an image using Streamlit's file uploader
@@ -25,7 +25,7 @@ def main():
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         # Apply Canny edge detection
-        edges = cv2.Canny(gray_image, 100, 200)
+        edges = cv2.Canny(gray_image, 100, 100)
 
         # Display the edge-detected image
         st.image(edges, caption="Edge Detection",

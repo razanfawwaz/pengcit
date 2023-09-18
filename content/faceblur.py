@@ -34,7 +34,7 @@ def main():
 
         # Detect faces in the image
         faces = face_cascade.detectMultiScale(
-            gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+            gray_image, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30))
 
         # Create a Streamlit column layout for "Before" and "After" images
         col1, col2 = st.columns(2)
@@ -45,6 +45,7 @@ def main():
                      use_column_width=True, channels="BGR")
 
         # Process the image to blur faces
+        print(faces)
         for (x, y, w, h) in faces:
             # Extract the region of interest (ROI) of each face
             face_roi = image[y:y + h, x:x + w]
@@ -54,7 +55,8 @@ def main():
 
             # Apply the selected blur type with the chosen kernel size
             if blur_type == "Mean Blur":
-                blurred_face = cv2.blur(face_roi, (kernel_size, kernel_size))
+                blurred_face = cv2.blur(
+                    face_roi, (kernel_size, kernel_size))
             elif blur_type == "Gaussian Blur":
                 blurred_face = cv2.GaussianBlur(
                     face_roi, (kernel_size, kernel_size), 0)
