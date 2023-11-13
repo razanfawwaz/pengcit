@@ -1,6 +1,6 @@
 import streamlit as st
 from multipage_streamlit import State
-from content import histogram, faceblur, edge, sharpening, morphology
+from content import histogram, faceblur, edge, sharpening, morphology, interpolation
 
 # Initialize the state
 state = State(__name__)
@@ -12,6 +12,7 @@ pages = {
     "Edge Detection": edge.main,
     "Sharpening": sharpening.main,
     "Morphology": morphology.main,
+    "Interpolation": interpolation.main,
 }
 
 st.sidebar.title("Pengolahan Citra")

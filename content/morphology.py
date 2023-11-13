@@ -42,3 +42,5 @@ def main():
             if img_gray is not None:
                 result = apply_morphology(img_gray, operation, kernel)
                 st.image(result, caption=operation + " Result", use_column_width=True)
+
+state.save()
