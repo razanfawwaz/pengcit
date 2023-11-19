@@ -1,49 +1,44 @@
 import streamlit as st
 import cv2
 import numpy as np
-from multipage_streamlit import State
 
-# Define a multipage app
-state = State(__name__)
+def chaincode(image):
+    # Grayscale
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    st.image(gray_image, caption="Grayscale", use_column_width=True)
 
+    # Deteksi tepi
+    edge_image = cv2.Canny(gray_image, 100, 200)
+    st.image(edge_image, caption="Edge Detection", use_column_width=True)
 
-# Function to get the chain code of a binary image
-def get_chain_code(binary_image):
-    contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
-    if len(contours) == 0:
-        return None
-    
-    contour = contours[0]  # Assuming only one contour for simplicity
-    
-    chain_code = []
-    directions = [0, 1, 2, 3, 4, 5, 6, 7]
+    # Dilatasi
+    kernel = np.ones((5, 5), np.uint8)
+    dilated_image = cv2.dilate(edge_image, kernel, iterations=1)
+    st.image(dilated_image, caption="Dilated Image", use_column_width=True)
 
-    for point in contour:
-        x, y = point[0]
-        chain_code.append(directions.index((x + 1, y) in contour))
-    
-    return chain_code
+    # Erosi
+    eroded_image = cv2.erode(dilated_image, kernel, iterations=1)
+    st.image(eroded_image, caption="Eroded Image", use_column_width=True)
 
-# Page 1: Image Upload and Chain Code
+    # Contoh lainnya: menambahkan operasi pengolahan citra sesuai kebutuhan Anda
+    # ...
+
 def main():
-    st.title("Upload Image for Chain Code")
+    st.title("Image Processing Chaincode with Streamlit")
 
-    # Upload an image
-    uploaded_file = st.file_uploader("Choose a binary image...", type=["jpg", "png", "jpeg"])
-    
+    # Upload gambar dari pengguna
+    uploaded_file = st.file_uploader("Choose a file", type=["jpg", "jpeg", "png"])
+
     if uploaded_file is not None:
-        binary_img = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
-        st.image(binary_img, caption="Uploaded Binary Image", use_column_width=True)
+        # Baca gambar
+        file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+        original_image = cv2.imdecode(file_bytes, 1)
 
-        # Get and display the chain code
-        chain_code = get_chain_code(binary_img)
+        # Tampilkan gambar asli
+        st.image(original_image, caption="Original Image", use_column_width=True)
 
-        if chain_code is not None:
-            st.subheader("Chain Code:")
-            st.write(chain_code)
-        else:
-            st.warning("No contour found in the binary image.")
+        # Jalankan chaincode
+        chaincode(original_image)
 
-# Run the app
-state.save()
+if __name__ == "__main__":
+    main()
