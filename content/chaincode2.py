@@ -7,23 +7,24 @@ def chaincode(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     st.image(gray_image, caption="Grayscale", use_column_width=True)
 
-    # Thresholding
-    _, thresh = cv2.threshold(gray_image, 127, 255, cv2.THRESH_BINARY)
+    # Deteksi tepi
+    edge_image = cv2.Canny(gray_image, 100, 200)
+    st.image(edge_image, caption="Edge Detection", use_column_width=True)
 
-    # Cari kontur
-    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    # Dilatasi
+    kernel = np.ones((5, 5), np.uint8)
+    dilated_image = cv2.dilate(edge_image, kernel, iterations=1)
+    st.image(dilated_image, caption="Dilated Image", use_column_width=True)
 
-    # Ambil kontur pertama
-    contour = contours[0]
+    # Erosi
+    eroded_image = cv2.erode(dilated_image, kernel, iterations=1)
+    st.image(eroded_image, caption="Eroded Image", use_column_width=True)
 
-    # Chain code
-    epsilon = 0.02 * cv2.arcLength(contour, True)
-    approx_chain = cv2.approxPolyDP(contour, epsilon, True)
-
-    st.write("Chain Code:", approx_chain)
+    # Contoh lainnya: menambahkan operasi pengolahan citra sesuai kebutuhan Anda
+    # ...
 
 def main():
-    st.title("Chain Code Calculation with Streamlit")
+    st.title("Image Processing Chaincode with Streamlit")
 
     # Upload gambar dari pengguna
     uploaded_file = st.file_uploader("Choose a file", type=["jpg", "jpeg", "png"])
@@ -36,7 +37,7 @@ def main():
         # Tampilkan gambar asli
         st.image(original_image, caption="Original Image", use_column_width=True)
 
-        # Jalankan chain code
+        # Jalankan chaincode
         chaincode(original_image)
 
 if __name__ == "__main__":
